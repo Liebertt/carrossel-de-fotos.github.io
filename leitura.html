@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roda Literária: Compartilhando e Orientando</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Azul claro acinzentado */
+        }
+        .theme-title {
+            font-family: 'Caveat', cursive;
+            color: #2c5282; /* Azul escuro */
+        }
+        .slideshow-container {
+            max-width: 900px; /* Aumentado para melhor visualização */
+            position: relative;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            overflow: hidden; /* Para garantir que as bordas arredondadas afetem a imagem */
+        }
+        .slide-image {
+            width: 100%;
+            height: 600px; /* Altura fixa para consistência */
+            object-fit: cover; /* Garante que a imagem cubra a área sem distorcer */
+            display: none; /* Escondido por padrão */
+            border-radius: 12px; /* Bordas arredondadas também na imagem */
+        }
+        .slide-image.active {
+            display: block;
+        }
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 18px;
+            margin-top: -25px;
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+            transition: 0.6s ease;
+            border-radius: 0 5px 5px 0;
+            user-select: none;
+            background-color: rgba(44, 82, 130, 0.6); /* Azul escuro com transparência */
+        }
+        .next {
+            right: 0;
+            border-radius: 5px 0 0 5px;
+        }
+        .prev:hover, .next:hover {
+            background-color: rgba(44, 82, 130, 0.9); /* Azul escuro mais opaco */
+        }
+        .caption-container {
+            text-align: center;
+            background-color: #e2e8f0; /* Azul bem claro */
+            padding: 10px 0;
+            color: #2d3748; /* Cinza escuro */
+            font-size: 16px;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .dots-container {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #f0f4f8;
+        }
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 3px;
+            background-color: #a0aec0; /* Cinza médio */
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+        .dot.active, .dot:hover {
+            background-color: #2c5282; /* Azul escuro */
+        }
+        .footer-text {
+            color: #4a5568; /* Cinza */
+        }
+        .header-bg {
+            background-color: #e2e8f0; /* Azul bem claro para o cabeçalho */
+            border-bottom: 2px solid #cbd5e0; /* Linha sutil */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <header class="w-full max-w-3xl py-6 mb-8 text-center header-bg rounded-lg shadow-md">
+        <h1 class="text-5xl font-bold theme-title">Roda Literária</h1>
+        <p class="text-xl text-gray-700 mt-2">Compartilhando e orientando alunos através da leitura versando.</p>
+    </header>
+
+    <div class="slideshow-container">
+        </div>
+
+    <div class="dots-container mt-6">
+        </div>
+
+    <footer class="mt-12 text-center">
+        <p class="text-sm footer-text">&copy; <span id="currentYear"></span> Apresentação de Fotos. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        let slideIndex = 0;
+        const slides = [];
+        const imageFiles = [
+            "foto1.jpeg", "foto2.jpeg", "foto3.jpeg", "foto4.jpeg", "foto5.jpeg",
+            "foto6.jpeg", "foto7.jpeg", "foto8.jpeg", "foto9.jpeg", "foto10.jpeg", "foto11.jpeg", "foto12.jpeg", "foto13.jpeg",
+            "foto14.jpeg"
+        ];
+
+        const slideshowContainer = document.querySelector('.slideshow-container');
+        const dotsContainer = document.querySelector('.dots-container');
+
+        // Mapeamento de nomes de arquivo para URLs de conteúdo buscado
+        // ATENÇÃO: Substitua 'URL_BASE_IMAGEM' pelo caminho correto ou mecanismo para acessar suas imagens.
+        // Para o ambiente do Canvas, as URLs são fornecidas de forma diferente.
+        // Esta é uma simulação de como as URLs poderiam ser construídas ou obtidas.
+        const uploadedImageUrls = {
+            "foto1.jpeg": "/foto1.jpeg",
+            "foto2.jpeg": "/foto2.jpeg",
+            "foto3.jpeg": "/foto3.jpeg",
+            "foto4.jpeg": "/foto4.jpeg",
+            "foto5.jpeg": "/foto5.jpeg",
+            "foto6.jpeg": "/foto6.jpeg",
+            "foto7.jpeg": "/foto7.jpeg",
+            "foto8.jpeg": "/foto8.jpeg",
+            "foto9.jpeg": "/foto9.jpeg",
+            "foto10.jpeg": "/foto10.jpeg",
+            "foto11.jpeg": "/foto11.jpeg",
+            "foto12.jpeg": "/foto12.jpeg",
+            "foto13.jpeg": "/foto13.jpeg",
+            "foto14.jpeg": "/foto14.jpeg"
+        };
+
+        imageFiles.forEach((fileName, index) => {
+            const imageUrl = uploadedImageUrls[fileName]; // Obtém a URL do objeto de mapeamento
+            if (imageUrl) { // Verifica se a URL foi encontrada
+                // Cria o elemento da imagem
+                const img = document.createElement('img');
+                img.src = imageUrl; // Define o src com a URL mapeada
+                img.alt = `Foto ${index + 1} - ${fileName}`;
+                img.classList.add('slide-image');
+                img.onerror = function() {
+                    this.onerror=null;
+                    this.src='https://placehold.co/900x600/CBD5E0/2D3748?text=Imagem+Nao+Encontrada';
+                    this.alt = `Erro ao carregar ${fileName}`;
+                };
+                slideshowContainer.appendChild(img);
+                slides.push(img);
+
+                // Cria a bolinha de navegação
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                dot.addEventListener('click', () => currentSlide(index));
+                dotsContainer.appendChild(dot);
+            } else {
+                console.error(`URL não encontrada para a imagem: ${fileName}`);
+                 // Adiciona um placeholder visual no slideshow se a URL não for encontrada
+                const placeholder = document.createElement('div');
+                placeholder.classList.add('slide-image', 'flex', 'items-center', 'justify-center', 'bg-gray-200');
+                placeholder.style.height = '600px'; // Mesma altura das imagens
+                placeholder.innerHTML = `<span class="text-gray-500">Erro: Imagem ${fileName} não encontrada</span>`;
+                slideshowContainer.appendChild(placeholder);
+                slides.push(placeholder); // Adiciona ao array de slides para manter a contagem correta
+
+                const dot = document.createElement('span');
+                dot.classList.add('dot', 'bg-red-500'); // Marca o dot como erro
+                dot.title = `Erro ao carregar ${fileName}`;
+                dotsContainer.appendChild(dot);
+            }
+        });
+
+
+        // Adiciona botões de navegação e legenda
+        const prevButton = document.createElement('a');
+        prevButton.classList.add('prev');
+        prevButton.innerHTML = '&#10094;';
+        prevButton.addEventListener('click', () => plusSlides(-1));
+        slideshowContainer.appendChild(prevButton);
+
+        const nextButton = document.createElement('a');
+        nextButton.classList.add('next');
+        nextButton.innerHTML = '&#10095;';
+        nextButton.addEventListener('click', () => plusSlides(1));
+        slideshowContainer.appendChild(nextButton);
+
+        const captionContainer = document.createElement('div');
+        captionContainer.classList.add('caption-container');
+        const captionText = document.createElement('p');
+        captionContainer.appendChild(captionText);
+        slideshowContainer.appendChild(captionContainer); // Adiciona a legenda dentro do container principal
+
+        function showSlides(n) {
+            if (slides.length === 0) return; // Não faz nada se não houver slides
+
+            slideIndex = (n + slides.length) % slides.length; // Garante que o índice seja cíclico
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('active'));
+
+            slides[slideIndex].classList.add('active');
+            const currentDot = dotsContainer.children[slideIndex];
+            if (currentDot) { // Verifica se o dot existe
+                 currentDot.classList.add('active');
+            }
+
+            // Atualiza a legenda
+            const currentImageFile = imageFiles[slideIndex];
+            captionText.textContent = `Foto ${slideIndex + 1}: ${currentImageFile}`;
+        }
+
+        function plusSlides(n) {
+            showSlides(slideIndex + n);
+        }
+
+        function currentSlide(n) {
+            showSlides(n);
+        }
+
+        // Exibe o primeiro slide
+        if (slides.length > 0) {
+            showSlides(slideIndex);
+        } else {
+            slideshowContainer.innerHTML = '<p class="text-center text-xl p-10">Nenhuma imagem para exibir.</p>';
+        }
+
+        // Atualiza o ano no rodapé
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Auto-slideshow (opcional)
+        // setInterval(() => {
+        //     plusSlides(1);
+        // }, 5000); // Muda a cada 5 segundos
+
+    </script>
+</body>
+</html>
