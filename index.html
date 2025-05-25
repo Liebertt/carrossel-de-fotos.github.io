@@ -118,6 +118,25 @@
             "foto14.jpeg"
         ];
 
+        // NOVO: Crie um array para as descrições
+const imageDescriptions = [
+    "Descrição da Foto 1: Um belo pôr do sol na praia.",
+    "Descrição da Foto 2: Montanhas cobertas de neve.",
+    "Descrição da Foto 3: Detalhe de uma flor colorida.",
+    "Descrição da Foto 4: Cena urbana movimentada à noite.",
+    "Descrição da Foto 5: Filhotes de cachorro brincando.",
+    "Descrição da Foto 6: Prato delicioso servido em um restaurante.",
+    "Descrição da Foto 7: Crianças sorrindo em um parque.",
+    "Descrição da Foto 8: Arquitetura histórica impressionante.",
+    "Descrição da Foto 9: Vista panorâmica de uma cidade.",
+    "Descrição da Foto 10: Obra de arte abstrata.",
+    "Descrição da Foto 11: Momento de leitura aconchegante.",
+    "Descrição da Foto 12: Festival cultural com muitas pessoas.",
+    "Descrição da Foto 13: Animal selvagem em seu habitat natural.",
+    "Descrição da Foto 14: Celebração de um evento especial."
+    // Adicione quantas descrições forem necessárias, correspondendo a cada foto
+];
+
         const slideshowContainer = document.querySelector('.slideshow-container');
         const dotsContainer = document.querySelector('.dots-container');
 
@@ -200,23 +219,30 @@
         slideshowContainer.appendChild(captionContainer); // Adiciona a legenda dentro do container principal
 
         function showSlides(n) {
-            if (slides.length === 0) return; // Não faz nada se não houver slides
+         if (slides.length === 0) return; // Não faz nada se não houver slides
 
-            slideIndex = (n + slides.length) % slides.length; // Garante que o índice seja cíclico
+         slideIndex = (n + slides.length) % slides.length; // Garante que o índice seja cíclico
 
-            slides.forEach(slide => slide.classList.remove('active'));
-            document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('active'));
+         slides.forEach(slide => slide.classList.remove('active'));
+         document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('active'));
 
-            slides[slideIndex].classList.add('active');
-            const currentDot = dotsContainer.children[slideIndex];
-            if (currentDot) { // Verifica se o dot existe
-                 currentDot.classList.add('active');
-            }
+         slides[slideIndex].classList.add('active');
+         const currentDot = dotsContainer.children[slideIndex];
+         if (currentDot) { // Verifica se o dot existe
+              currentDot.classList.add('active');
+         }
 
-            // Atualiza a legenda
-            const currentImageFile = imageFiles[slideIndex];
-            captionText.textContent = `Foto ${slideIndex + 1}: ${currentImageFile}`;
-        }
+         // Atualiza a legenda
+         const currentImageFile = imageFiles[slideIndex]; // Você pode manter isso se quiser usar em outro lugar
+         // captionText.textContent = `Foto ${slideIndex + 1}: ${currentImageFile}`; // Linha ANTIGA
+         
+         // MODIFICAÇÃO: Use a descrição do array imageDescriptions
+         if (imageDescriptions[slideIndex]) { // Verifica se a descrição existe
+             captionText.textContent = imageDescriptions[slideIndex];
+         } else {
+             captionText.textContent = `Foto ${slideIndex + 1}: ${currentImageFile}`; // Fallback se não houver descrição
+         }
+     }
 
         function plusSlides(n) {
             showSlides(slideIndex + n);
